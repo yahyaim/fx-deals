@@ -1,0 +1,4 @@
+deal_uid,from_currency,to_currency,deal_timestamp,amount
+D-1001,USD,EUR,2025-09-30T10:15:30Z,10000.50
+D-1002,GBP,USD,2025-09-30T11:00:00Z,25000
+D-1003,EUR,JPY,2025-09-30T12:45:00Z,5000000
