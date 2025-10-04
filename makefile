@@ -30,7 +30,24 @@ clean:
 	@echo "🧹 Cleaning project..."
 	./gradlew clean
 
-# Run app with a CSV file or single-line deal
+Run app with a CSV file or single-line deal
+Usage:
+  make run FILE=/app/sample-data/deals-sample.csv
+  make run DEAL="sample-data/deals-sample2.csv"
+run: docker
+ifndef FILE
+ifndef DEAL
+	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
+endif
+endif
+	@echo "📦 Running app..."
+ifdef FILE
+	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
+endif
+ifdef DEAL
+	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
+endif
+# Run app with a CSV file or single-line deal fully inside Docker
 # Usage:
 #   make run FILE=/app/sample-data/deals-sample.csv
 #   make run DEAL="sample-data/deals-sample2.csv"
@@ -40,27 +57,10 @@ clean:
 # 	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
 # endif
 # endif
-# 	@echo "📦 Running app..."
+# 	@echo "📦 Running app inside Docker Compose..."
 # ifdef FILE
 # 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
 # endif
 # ifdef DEAL
 # 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
 # endif
-# Run app with a CSV file or single-line deal fully inside Docker
-# Usage:
-#   make run FILE=/app/sample-data/deals-sample.csv
-#   make run DEAL="sample-data/deals-sample2.csv"
-run: docker
-ifndef FILE
-ifndef DEAL
-	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
-endif
-endif
-	@echo "📦 Running app inside Docker Compose..."
-ifdef FILE
-	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
-endif
-ifdef DEAL
-	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
-endif

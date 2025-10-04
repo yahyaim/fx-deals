@@ -20,9 +20,15 @@
 # # Wait for DB to be ready, then run app with argument
 # CMD ["/wait-for-it.sh", "db:5432", "--", "bash", "-c", "/app/bin/app $DEAL_INPUT"]
 # Build stage: Use full JDK to build the app
-FROM eclipse-temurin:21-jdk-jammy AS build
+# Build stage: Use full JDK to build the app
+
+FROM gradle:8.5-jdk21 AS builder
 
 WORKDIR /app
+COPY . .
+
+# Build the app and install distribution
+RUN ./gradlew  :app:installDist 
 
 # Copy Gradle wrapper and project files
 COPY gradlew .
@@ -42,8 +48,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
 
 # Copy built app from the build stage
-COPY --from=build /app/app/build/install/app/ /app/
-
+COPY --from=builder /app/app/build/install/app/ /app/
 # Copy sample data and scripts
 COPY sample-data /app/sample-data
 COPY scripts/wait-for-it.sh /wait-for-it.sh
