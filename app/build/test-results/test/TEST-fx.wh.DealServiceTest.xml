@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fx.wh.DealServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-10-04T17:03:58.986Z" hostname="marams-MacBook-Pro.local" time="0.035">
+  <properties/>
+  <testcase name="processFileWithParseErrors()" classname="fx.wh.DealServiceTest" time="0.03"/>
+  <testcase name="importSingleLineInvalidDeal()" classname="fx.wh.DealServiceTest" time="0.002"/>
+  <testcase name="importSingleLineValidDeal()" classname="fx.wh.DealServiceTest" time="0.001"/>
+  <testcase name="processFileWithValidationErrors()" classname="fx.wh.DealServiceTest" time="0.001"/>
+  <system-out><![CDATA[2025-10-04 21:03:59.012 [Test worker] INFO  fx.wh.model.Deal - Deal created: Deal{dealId='D2', fromCurrency='USD', toCurrency='EUR', timestamp=2025-10-04T15:07:16Z, amount=10}
+2025-10-04 21:03:59.014 [Test worker] ERROR fx.wh.service.DealService - CSV file is null or does not exist: dummy.csv
+2025-10-04 21:03:59.017 [Test worker] INFO  fx.wh.model.Deal - Deal created: Deal{dealId='D5', fromCurrency='USD', toCurrency='EUR', timestamp=2025-10-04T15:07:16Z, amount=10}
+2025-10-04 21:03:59.018 [Test worker] WARN  fx.wh.service.DealService - Invalid deal format, skipping: D5,USD,EUR,2025-10-04T15:07:16Z,10
+2025-10-04 21:03:59.019 [Test worker] INFO  fx.wh.model.Deal - Deal created: Deal{dealId='D4', fromCurrency='USD', toCurrency='EUR', timestamp=2025-10-04T15:07:16Z, amount=10}
+2025-10-04 21:03:59.019 [Test worker] INFO  fx.wh.service.DealService - Inserted single parsed deal D4
+2025-10-04 21:03:59.020 [Test worker] INFO  fx.wh.model.Deal - Deal created: Deal{dealId='D3', fromCurrency='USD', toCurrency='EUR', timestamp=2025-10-04T15:07:16Z, amount=10}
+2025-10-04 21:03:59.021 [Test worker] ERROR fx.wh.service.DealService - CSV file is null or does not exist: dummy.csv
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

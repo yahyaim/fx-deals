@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fx.wh.ValidatorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-10-04T17:03:59.028Z" hostname="marams-MacBook-Pro.local" time="0.001">
+  <properties/>
+  <testcase name="validateNullDeal()" classname="fx.wh.ValidatorTest" time="0.0"/>
+  <testcase name="validateCorrectDeal()" classname="fx.wh.ValidatorTest" time="0.001"/>
+  <system-out><![CDATA[2025-10-04 21:03:59.028 [Test worker] WARN  fx.wh.utils.Validator - Deal is null
+2025-10-04 21:03:59.029 [Test worker] INFO  fx.wh.model.Deal - Deal created: Deal{dealId='D1', fromCurrency='USD', toCurrency='EUR', timestamp=2025-10-04T17:03:59.029255Z, amount=10}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

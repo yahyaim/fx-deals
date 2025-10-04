@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS deals (
 | `make run FILE=...` | Run app with CSV                |
 | `make run DEAL=...` | Run app with single deal        |
 | `make test`         | Run unit tests                  |
-| `make clean`        | Clean Gradle build artifacts    |
+| `make clean`        | Clean Gradle build artifacts (removes the pre-built app)    |
 
 
 

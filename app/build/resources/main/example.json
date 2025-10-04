@@ -1,0 +1,10 @@
+[
+    {
+      "dealId": "D-123",
+      "orderingCurrency": "USD",
+      "toCurrency": "AED",
+      "dealTimestamp": "2025-09-30T14:30:00Z",
+      "dealAmount": 12345.67
+    }
+  ]
+  
