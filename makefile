@@ -1,66 +1,35 @@
-.PHONY: build docker up down test clean run
+.PHONY: docker up down run clean
 
-# Build the Gradle project and installDist
-build:
-	@echo "🔨 Building Java project..."
-	./gradlew :app:clean :app:installDist
-
-# Build Docker image for the app
-docker: build
+# Build Docker image (app must already be built locally)
+docker:
 	@echo "🐳 Building Docker image..."
 	docker build -t fx-dwh .
 
-# Run the full docker-compose stack (Postgres + app)
+# Start full stack with Docker Compose (Postgres + app)
 up: docker
 	@echo "🚀 Starting Docker containers..."
-	docker-compose up --build
+	docker-compose up --build -d
 
-# Stop and remove docker-compose stack
+# Stop and remove stack
 down:
 	@echo "🛑 Stopping Docker containers..."
 	docker-compose down -v
 
-# Run unit tests
-test:
-	@echo "✅ Running tests..."
-	./gradlew test
-
-# Clean build artifacts
-clean:
-	@echo "🧹 Cleaning project..."
-	./gradlew clean
-
-Run app with a CSV file or single-line deal
-Usage:
-  make run FILE=/app/sample-data/deals-sample.csv
-  make run DEAL="sample-data/deals-sample2.csv"
+# Run app fully containerized
+# Usage:
+#   make run FILE=sample-data/deals-sample.csv
+#   make run DEAL="deal1,deal2"
 run: docker
 ifndef FILE
 ifndef DEAL
 	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
 endif
 endif
-	@echo "📦 Running app..."
+	@echo "📦 Running app inside Docker Compose..."
 ifdef FILE
 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
 endif
 ifdef DEAL
 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
 endif
-# Run app with a CSV file or single-line deal fully inside Docker
-# Usage:
-#   make run FILE=/app/sample-data/deals-sample.csv
-#   make run DEAL="sample-data/deals-sample2.csv"
-# run: docker
-# ifndef FILE
-# ifndef DEAL
-# 	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
-# endif
-# endif
-# 	@echo "📦 Running app inside Docker Compose..."
-# ifdef FILE
-# 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
-# endif
-# ifdef DEAL
-# 	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
-# endif
+

@@ -69,7 +69,7 @@ Make sure you have the following installed:
 
 ## 🚀 Build & Run
 
-### 1. Build the Java project
+### 1. Build the Java project (if you have Java & Gradle installed locally)
 ```bash
 make build
 ```
@@ -85,11 +85,11 @@ This creates a Docker image named fx-dwh using the built artifacts.
 ```bash
 make up
 ```
-This runs both the Postgres database and the FX-DWH app containers against ```/app/sample-data/deals-sample.csv``` by default.
+This runs both the Postgres database and the FX-DWH app containers against ```/app/sample-data/deals-sample.csv``` by default. Thus, you can add more entry to this file for testing.
 
 
 
-## 🧠 Running the App with Data (Unseen Deals)
+## 🧠 Running the App with new Data (Unseen Deals)
 
 You can pass data to the app either as a CSV file or a single deal line.
 ### ▶️ Option 1: Using a CSV file
@@ -170,9 +170,7 @@ Stops and removes all containers, networks, and volumes.
 
 ## 🏗️ Example End-to-End Run
 ```bash
-make clean
 make docker
-make up
 make run FILE=/app/sample-data/deals-sample.csv
 make run DEAL="D-1006,EUR,JPY,2025-09-30T12:45:00Z,5000000"
 ```

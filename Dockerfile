@@ -1,62 +1,22 @@
-# # Use Java 21 runtime
-# FROM eclipse-temurin:21-jre-jammy
-
-# # Working directory inside container
-# WORKDIR /app
-
-# # Install dependencies
-# RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
-
-# # Copy built app from Gradle
-# COPY app/build/install/app/ /app/
-# COPY sample-data /app/sample-data
-# COPY scripts/wait-for-it.sh /wait-for-it.sh
-# RUN chmod +x /wait-for-it.sh
-
-# # Default argument (can be overridden at runtime)
-# ARG DEAL_INPUT=sample-data/deals-sample.csv
-# ENV DEAL_INPUT=$DEAL_INPUT
-
-# # Wait for DB to be ready, then run app with argument
-# CMD ["/wait-for-it.sh", "db:5432", "--", "bash", "-c", "/app/bin/app $DEAL_INPUT"]
-# Build stage: Use full JDK to build the app
-# Build stage: Use full JDK to build the app
-
-FROM gradle:8.5-jdk21 AS builder
-
-WORKDIR /app
-COPY . .
-
-# Build the app and install distribution
-RUN ./gradlew  :app:installDist 
-
-# Copy Gradle wrapper and project files
-COPY gradlew .
-COPY gradle gradle
-COPY app app
-COPY build.gradle settings.gradle ./
-
-# Build the app and install distribution
-RUN ./gradlew :app:clean :app:installDist --no-daemon
-
-# Runtime stage: Use minimal JRE
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Install dependencies (optional, e.g., netcat)
+# Install optional dependencies (netcat for wait-for-it)
 RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
 
-# Copy built app from the build stage
-COPY --from=builder /app/app/build/install/app/ /app/
-# Copy sample data and scripts
+# Copy the pre-built app distribution
+COPY app/build/install/app/ /app/
+
+# Copy sample data and wait-for-it script
 COPY sample-data /app/sample-data
 COPY scripts/wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-# Default argument
+# Default argument for the app
 ARG DEAL_INPUT=sample-data/deals-sample.csv
 ENV DEAL_INPUT=$DEAL_INPUT
 
-# Wait for DB then run app
+# Wait for DB, then run the app
 CMD ["/wait-for-it.sh", "db:5432", "--", "/app/bin/app", "$DEAL_INPUT"]
+    
