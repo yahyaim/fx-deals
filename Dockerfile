@@ -1,22 +1,42 @@
+# =====================================================
+# Stage 1: Build the Java app with Gradle
+# =====================================================
+FROM gradle:8.8-jdk21-jammy AS builder
+
+WORKDIR /app
+COPY . .
+
+# Build and install the application distribution
+RUN gradle :app:clean :app:installDist --no-daemon
+
+# =====================================================
+# Stage 2: Run the built app with JRE only
+# =====================================================
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Install optional dependencies (netcat for wait-for-it)
-RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
+# Install small dependencies (wait-for-it)
+RUN apt-get update && apt-get install -y --no-install-recommends netcat bash && rm -rf /var/lib/apt/lists/*
 
-# Copy the pre-built app distribution
-COPY app/build/install/app/ /app/
-
-# Copy sample data and wait-for-it script
+# Copy built app and assets
+COPY --from=builder /app/app/build/install/app /app/
 COPY sample-data /app/sample-data
 COPY scripts/wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
 
-# Default argument for the app
-ARG DEAL_INPUT=sample-data/deals-sample.csv
-ENV DEAL_INPUT=$DEAL_INPUT
+RUN chmod +x /wait-for-it.sh /app/bin/app
 
-# Wait for DB, then run the app
-CMD ["/wait-for-it.sh", "db:5432", "--", "/app/bin/app", "$DEAL_INPUT"]
-    
+# Default input argument (can be overridden by env)
+ENV DEAL_INPUT="/app/sample-data/deals-sample.csv"
+
+# ENTRYPOINT: wait for DB if DB_HOST is defined, otherwise skip
+ENTRYPOINT ["bash", "-c", "\
+if [ -n \"$DB_HOST\" ]; then \
+  /wait-for-it.sh $DB_HOST:$DB_PORT -- /app/bin/app \"$DEAL_INPUT\"; \
+else \
+  /app/bin/app \"$DEAL_INPUT\"; \
+fi \
+"]
+
+# Default CMD (for Compose override)
+CMD []

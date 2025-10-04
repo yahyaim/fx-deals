@@ -168,12 +168,22 @@ Stops and removes all containers, networks, and volumes.
 
 
 
-## 🏗️ Example End-to-End Run
+## 🏗️ Example End-to-End Run Using docker compose
 ```bash
+docker compose up -d db
+docker compose run --rm -e DEAL_INPUT="D-1006,USD,EUR,2025-09-30T10:15:30Z,10000.50" app
+```
+where DEAL_INPUT is a single deal
+
+## 🏗️ Example End-to-End Run 
+```bash
+make clean
+make build
 make docker
 make run FILE=/app/sample-data/deals-sample.csv
 make run DEAL="D-1006,EUR,JPY,2025-09-30T12:45:00Z,5000000"
 ```
+🧰 make command available (on Windows, use WSL or Git Bash)
 
 ## 🔮 Future Improvements
 

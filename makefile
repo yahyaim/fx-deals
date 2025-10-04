@@ -1,35 +1,66 @@
-.PHONY: docker up down run clean
+.PHONY: build docker up down clean test run
 
-# Build Docker image (app must already be built locally)
-docker:
+# -----------------------------
+# Build the Java project
+# -----------------------------
+build:
+	@echo "🔨 Building Java project..."
+	./gradlew :app:clean :app:installDist --no-daemon
+
+# -----------------------------
+# Build Docker image
+# -----------------------------
+docker: build
 	@echo "🐳 Building Docker image..."
 	docker build -t fx-dwh .
 
-# Start full stack with Docker Compose (Postgres + app)
+# -----------------------------
+# Start full Docker Compose stack
+# -----------------------------
 up: docker
-	@echo "🚀 Starting Docker containers..."
-	docker-compose up --build -d
+	@echo "🚀 Starting Docker Compose stack..."
+	docker compose up --build
 
-# Stop and remove stack
+# -----------------------------
+# Stop Docker Compose stack
+# -----------------------------
 down:
-	@echo "🛑 Stopping Docker containers..."
-	docker-compose down -v
+	@echo "🛑 Stopping Docker Compose stack..."
+	docker compose down -v
 
-# Run app fully containerized
+# -----------------------------
+# Clean Gradle build artifacts
+# -----------------------------
+clean:
+	@echo "🧹 Cleaning build artifacts..."
+	./gradlew clean
+
+# -----------------------------
+# Run tests
+# -----------------------------
+test:
+	@echo "✅ Running tests..."
+	./gradlew test
+
+# -----------------------------
+# Run app with CSV file or single deal string
 # Usage:
-#   make run FILE=sample-data/deals-sample.csv
-#   make run DEAL="deal1,deal2"
+#   make run FILE=/path/to/file.csv
+#   make run DEAL="D-1006,USD,EUR,2025-09-30T10:15:30Z,10000.50"
+# -----------------------------
 run: docker
 ifndef FILE
 ifndef DEAL
 	$(error You must set FILE=<csv-path> or DEAL="<deal-string>")
 endif
 endif
-	@echo "📦 Running app inside Docker Compose..."
+
 ifdef FILE
-	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app $(FILE)
-endif
-ifdef DEAL
-	docker-compose run --rm app /wait-for-it.sh db:5432 -- /app/bin/app "$(DEAL)"
+	@echo "📦 Running app with CSV file: $(FILE)"
+	docker compose run --rm -e DEAL_INPUT="$(FILE)" app
 endif
 
+ifdef DEAL
+	@echo "📦 Running app with single deal: $(DEAL)"
+	docker compose run --rm -e DEAL_INPUT="$(DEAL)" app
+endif
