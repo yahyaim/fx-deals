@@ -6,14 +6,11 @@ A simple Java Gradle application that ingests **foreign exchange (FX) deals** fr
 
 and stores them in a **PostgreSQL** database using **Docker Compose**.
 
----
-
 ## 🧠 Overview
 
 FX-DWH automates ingestion and validation of FX deals before persisting them in a relational database.  
 It’s designed to be **modular**, **dockerized**, and **extensible** for future integration with analytics or reporting tools.
 
----
 
 ## ⚙️ Tech Stack
 
@@ -29,7 +26,7 @@ It’s designed to be **modular**, **dockerized**, and **extensible** for future
 | **Testing** | JUnit | Unit tests |
 | **Shell Utility** | `wait-for-it.sh` | Waits for DB readiness |
 
----
+
 
 ## 🧩 Architecture Diagram
 
@@ -44,7 +41,7 @@ flowchart LR
     D -->|Stores unique deals| E[deals Table]
 
 ```
----
+
 
 
 ## 🏗️ Container Setup
@@ -59,7 +56,7 @@ graph TD
     A -->|Reads| C[CSV File 📄]
     A -->|or| D[Single Deal Input 💬]
 ```
----
+
 
 ## ⚙️ Prerequisites
 
@@ -68,7 +65,7 @@ Make sure you have the following installed:
 - **Make**
 - **Java 21+** and **Gradle** (only needed for local builds)
 
----
+
 
 ## 🚀 Build & Run
 
@@ -88,11 +85,11 @@ This creates a Docker image named fx-dwh using the built artifacts.
 ```bash
 make up
 ```
-This runs both the Postgres database and the FX-DWH app containers.
+This runs both the Postgres database and the FX-DWH app containers against ```/app/sample-data/deals-sample.csv``` by default.
 
----
 
-## 🧠 Running the App with Data
+
+## 🧠 Running the App with Data (Unseen Deals)
 
 You can pass data to the app either as a CSV file or a single deal line.
 ### ▶️ Option 1: Using a CSV file
@@ -107,7 +104,7 @@ make run DEAL="D-1006,USD,EUR,2025-09-30T10:15:30Z,10000.50"
 ```
 This inserts one deal directly (without needing a CSV).
 
----
+
 
 ## 🧱 Database Schema
 
@@ -123,7 +120,7 @@ CREATE TABLE IF NOT EXISTS deals (
     CONSTRAINT uq_deal_uid UNIQUE (deal_uid)
 );
 ```
----
+
 
 ## 🧰 Common Make Commands
 
@@ -138,7 +135,7 @@ CREATE TABLE IF NOT EXISTS deals (
 | `make test`         | Run unit tests                  |
 | `make clean`        | Clean Gradle build artifacts    |
 
----
+
 
 ## 🗄️ Accessing the Database
 You can connect to the Postgres container:
@@ -157,7 +154,7 @@ make down
 ```
 Stops and removes all containers, networks, and volumes.
 
----
+
 
 ## 🧩 Notes
 - The app automatically waits until Postgres is ready before starting (via wait-for-it.sh).
@@ -169,7 +166,7 @@ Stops and removes all containers, networks, and volumes.
   app/sample-data/deals-sample2.csv
   ```
 
----
+
 
 ## 🏗️ Example End-to-End Run
 ```bash
@@ -180,7 +177,7 @@ make up
 make run FILE=/app/sample-data/deals-sample.csv
 make run DEAL="D-1006,EUR,JPY,2025-09-30T12:45:00Z,5000000"
 ```
----
+
 ## 🔮 Future Improvements
 
 A future enhancement could expose the ingestion and querying logic via a RESTful API.
@@ -196,8 +193,9 @@ flowchart LR
     B -->|Service Layer| C[FX-DWH Core]
     C -->|JDBC| D[(PostgreSQL)]
 ```
----
-## Author:
-Maram ©
+
+## Author: 
+maram ©
+ps: I used AI tool to help me write this read.me
 
 
