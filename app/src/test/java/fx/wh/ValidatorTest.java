@@ -1,21 +1,31 @@
 package fx.wh;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import fx.wh.model.Deal;
+import fx.wh.utils.Validator;
+
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import fx.wh.model.Deal;
-import fx.wh.utils.Validator;
+class ValidatorTest {
 
-public class ValidatorTest {
+    private final Validator validator = new Validator();
+
     @Test
-    void validDealIsAccepted() {
-        Deal d = new Deal("D-1","USD","EUR", Instant.now(), new BigDecimal("100.0"));
-        Validator v = new Validator();
-        var res = v.validate(d);
-        assertTrue(res.valid);
+    void validateNullDeal() {
+        Validator.Result result = validator.validate(null);
+        assertFalse(result.valid);
+        assertTrue(result.errors.contains("Deal is null"));
+    }
+
+    @Test
+    void validateCorrectDeal() {
+        Deal deal = new Deal("D1", "USD", "EUR", Instant.now(), BigDecimal.TEN);
+        Validator.Result result = validator.validate(deal);
+        assertTrue(result.valid);
+        assertTrue(result.errors.isEmpty());
     }
 }
