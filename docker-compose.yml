@@ -26,8 +26,8 @@ services:
       DB_USER: fxuser
       DB_PASS: fxpass
     volumes:
-    - ./sample-data:/app/sample-data
-    - ./scripts/wait-for-it.sh:/wait-for-it.sh
+      - ./sample-data:/app/sample-data
+      - ./scripts/wait-for-it.sh:/wait-for-it.sh
     command: ["/wait-for-it.sh", "db:5432", "--", "/app/bin/app", "/app/sample-data/deals-sample.csv"]
 
 volumes:

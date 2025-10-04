@@ -84,4 +84,39 @@ public class DealService {
         }
     }
 
+    public void importLine(String line) throws Exception {
+        // Example expected format:
+        // D-1234,USD,EUR,2025-10-04T12:00:00Z,1000.50
+        String[] parts = line.split(",");
+        if (parts.length != 5) {
+            throw new IllegalArgumentException("Expected 5 fields but got " + parts.length);
+        }
+        String uid = parts[0].trim();
+        String from = parts[1].trim();
+        String to = parts[2].trim();
+        String ts = parts[3].trim();
+        String amt = parts[4].trim();
+
+        var deal = new fx.wh.model.Deal(uid, from, to, java.time.Instant.parse(ts), new java.math.BigDecimal(amt));
+        var v = validator.validate(deal);
+        if (!v.valid) {
+            throw new IllegalArgumentException("Validation failed: " + v.errors);
+        }
+        boolean inserted = repository.insertDeal(deal);
+        if (inserted) {
+            logger.info("Inserted single deal {}", deal.getDealId());
+        } else {
+            logger.info("Single deal not inserted (duplicate or error) {}", deal.getDealId());
+        }
+    }
+
+    public void importSingleLine(String line) {
+        var deal = parser.parseLine(line);
+        if (validator.isValid(deal)) {
+            repository.insertDeal(deal);
+        } else {
+            logger.info("Invalid deal format:", deal);
+        }
+    }
+
 }

@@ -10,7 +10,7 @@ plugins {
     id 'application'
     id 'java'
     id 'org.gradle.java-test-fixtures'
-    // id 'com.github.johnrengelman.shadow' version '8.1.1'
+
 }
 
 repositories {

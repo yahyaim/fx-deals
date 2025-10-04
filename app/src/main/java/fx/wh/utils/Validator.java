@@ -6,9 +6,12 @@ import java.util.List;
 import fx.wh.model.Deal;
 
 public class Validator {
+
+
     public static class Result {
         public final boolean valid;
         public final List<String> errors;
+       
         public Result(boolean valid, List<String> errors) {
             this.valid = valid; this.errors = errors;
         }
@@ -30,5 +33,9 @@ public class Validator {
 
     private boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
+    }
+
+    public boolean isValid(Deal d) {
+        return validate(d).valid;
     }
 }

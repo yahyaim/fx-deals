@@ -54,4 +54,24 @@ public class Parser {
         return results;
     
     }
+
+    public Deal parseLine(String line) {
+        String[] parts = line.split(",");
+        if (parts.length != 5) {
+            throw new IllegalArgumentException("Expected 5 fields but got " + parts.length);
+        }
+        String uid = parts[0].trim();
+        String from = parts[1].trim();
+        String to = parts[2].trim();
+        String ts = parts[3].trim();
+        String amt = parts[4].trim();
+
+        try {
+            Instant instant = Instant.parse(ts);
+            BigDecimal amount = new BigDecimal(amt);
+            return new Deal(uid, from, to, instant, amount);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Parse error: " + e.getMessage(), e);
+        }
+    }
 }

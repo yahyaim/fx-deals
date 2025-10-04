@@ -10,32 +10,41 @@ import fx.wh.utils.Parser;
 import fx.wh.utils.Validator;
 
 import java.io.File;
+import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class App {
     public String getGreeting() {
-        return "Hello World!";
+        return "Weclome to FX data warehouse managment system!";
     }
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-        // PostgresClient client = new PostgresClient();
-        // client.testConnection();
+       
 
         if (args.length < 1) {
             System.err.println("Usage: java -jar fx-wh.jar <path-to-csv>");
             System.exit(2);
         }
-        File f = new File(args[0]);
-        // String filePath = "/Users/maras/Desktop/progress soft/FX-WH/sample-data/deals-sample.csv";  
-        // File f = new File(filePath);
 
-        if (!f.exists()) {
-            System.err.println("File not found: " + f.getAbsolutePath());
-            System.exit(2);
-        }
+        // File f = new File(args[0]);
+
+        // if (!f.exists()) {
+        //     System.err.println("File not found: " + f.getAbsolutePath());
+        //     System.exit(2);
+        // }
+
+        // var ds = DatabaseConfig.getDataSource();
+        // var repository = new DealRepository(ds);
+        // var parser = new Parser();
+        // var validator = new Validator();
+        // var service = new DealService(parser, validator, repository);
+
+        // try {
+        //     service.importFile(f);
+        // } finally {
+        //     DatabaseConfig.close();
+        // }
 
         var ds = DatabaseConfig.getDataSource();
         var repository = new DealRepository(ds);
@@ -44,9 +53,33 @@ public class App {
         var service = new DealService(parser, validator, repository);
 
         try {
-            service.importFile(f);
+            String input = args[0];
+            File file = new File(input);
+
+            if (file.exists() && file.isFile()) {
+                System.out.println("Detected CSV file input: " + file.getAbsolutePath());
+                service.importFile(file);
+            } else {
+                System.out.println("Detected single-line deal input.");
+                processSingleDeal(input, service);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         } finally {
             DatabaseConfig.close();
+        }
+    }
+
+    private static void processSingleDeal(String line, DealService service) throws IOException {
+        // Example expected format:
+        // D-1234,USD,EUR,2025-10-04T12:00:00Z,1000.50
+        
+        try {
+            service.importSingleLine(line);
+            System.out.println("Successfully processed single deal: " + line);
+        } catch (Exception e) {
+            System.err.println("Failed to process single deal: " + e.getMessage());
         }
     }
 }
