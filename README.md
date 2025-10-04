@@ -171,7 +171,6 @@ Stops and removes all containers, networks, and volumes.
 ## 🏗️ Example End-to-End Run
 ```bash
 make clean
-make build
 make docker
 make up
 make run FILE=/app/sample-data/deals-sample.csv
