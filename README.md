@@ -8,6 +8,59 @@ and stores them in a **PostgreSQL** database using **Docker Compose**.
 
 ---
 
+## 🧠 Overview
+
+FX-DWH automates ingestion and validation of FX deals before persisting them in a relational database.  
+It’s designed to be **modular**, **dockerized**, and **extensible** for future integration with analytics or reporting tools.
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-------------|----------|
+| **Language** | Java 21 (Eclipse Temurin) | Core application logic |
+| **Build Tool** | Gradle | Project build & dependency management |
+| **Database** | PostgreSQL | Persistent storage for deals |
+| **Connection Pool** | HikariCP | Efficient DB connection handling |
+| **Containerization** | Docker & Docker Compose | Container orchestration |
+| **Automation** | Makefile | Build & deployment shortcuts |
+| **Logging** | SLF4J + Logback | Structured logging |
+| **Testing** | JUnit | Unit tests |
+| **Shell Utility** | `wait-for-it.sh` | Waits for DB readiness |
+
+---
+
+## 🧩 Architecture Diagram
+
+### 📊 Data Flow
+
+```mermaid
+
+flowchart LR
+    A[CSV File or Single Deal Input] -->|Validated by| B[Java App FX-DWH]
+    B -->|Parses & Validates| C[DealService]
+    C -->|Inserts via JDBC| D[(PostgreSQL Database)]
+    D -->|Stores unique deals| E[deals Table]
+
+```
+---
+
+
+## 🏗️ Container Setup
+
+### 📊 Data Flow
+
+```mermaid
+graph TD
+    subgraph Docker_Network
+        A[fx-dwh-app 🧠] -->|JDBC Connection| B[(Postgres DB 🗄️)]
+    end
+    A -->|Reads| C[CSV File 📄]
+    A -->|or| D[Single Deal Input 💬]
+```
+---
+
 ## ⚙️ Prerequisites
 
 Make sure you have the following installed:
@@ -125,10 +178,26 @@ make build
 make docker
 make up
 make run FILE=/app/sample-data/deals-sample.csv
-make run DEAL="D-2001,2025-10-04,USD/JPY,500000,149.32"
+make run DEAL="D-1006,EUR,JPY,2025-09-30T12:45:00Z,5000000"
+```
+---
+## 🔮 Future Improvements
+
+A future enhancement could expose the ingestion and querying logic via a RESTful API.
+This would allow:
+ - Submitting FX deals via ```POST /api/deals```
+ - Retrieving stored deals via ```GET /api/deals```
+ - Filtering or searching by currency pair, date, or amount range
+ - Integrating with external systems or dashboards for live deal tracking
+ - The API layer could be built using Spring Boot or Jakarta EE, running as a microservice alongside the existing ingestion component.
+```mermaid
+flowchart LR
+    A[Client / Frontend] -->|HTTP JSON| B[REST API]
+    B -->|Service Layer| C[FX-DWH Core]
+    C -->|JDBC| D[(PostgreSQL)]
 ```
 ---
 ## Author:
-Maram
-Java | Docker | PostgreSQL 
+Maram ©
+
 
