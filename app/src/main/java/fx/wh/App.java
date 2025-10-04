@@ -3,7 +3,16 @@
  */
 package fx.wh;
 
-import fx.wh.database.PostgresClient;
+import fx.wh.database.DatabaseConfig;
+import fx.wh.repository.DealRepository;
+import fx.wh.service.DealService;
+import fx.wh.utils.Parser;
+import fx.wh.utils.Validator;
+
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
     public String getGreeting() {
@@ -12,7 +21,32 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-        PostgresClient client = new PostgresClient();
-        client.testConnection();
+        // PostgresClient client = new PostgresClient();
+        // client.testConnection();
+
+        if (args.length < 1) {
+            System.err.println("Usage: java -jar fx-wh.jar <path-to-csv>");
+            System.exit(2);
+        }
+        File f = new File(args[0]);
+        // String filePath = "/Users/maras/Desktop/progress soft/FX-WH/sample-data/deals-sample.csv";  
+        // File f = new File(filePath);
+
+        if (!f.exists()) {
+            System.err.println("File not found: " + f.getAbsolutePath());
+            System.exit(2);
+        }
+
+        var ds = DatabaseConfig.getDataSource();
+        var repository = new DealRepository(ds);
+        var parser = new Parser();
+        var validator = new Validator();
+        var service = new DealService(parser, validator, repository);
+
+        try {
+            service.importFile(f);
+        } finally {
+            DatabaseConfig.close();
+        }
     }
 }

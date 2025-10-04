@@ -2,7 +2,6 @@ package fx.wh.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.jspecify.annotations.NonNull;

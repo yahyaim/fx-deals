@@ -16,9 +16,6 @@ public class DealRepository {
         this.datasource = datasource;
     }
 
-    private static final String INSERT_SQL =
-    "INSERT INTO deals (deal_uid, from_currency, to_currency, deal_timestamp, amount) VALUES (?, ?, ?, ?, ?)";
-
     public boolean insertDeal(Deal deal) {
         String sql = "INSERT INTO deals (deal_id, from_currency, to_currency, deal_timestamp, amount) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = datasource.getConnection();

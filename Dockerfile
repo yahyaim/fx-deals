@@ -1,6 +1,13 @@
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
+
 WORKDIR /app
-COPY build/libs/fx-deals-ingest-0.1.0-all.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
-# Note: It’s a CLI app that takes a CSV path arg. Expose 8080 only if you add HTTP endpoints later.
+
+# Install netcat
+RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
+
+COPY app/build/install/app/ /app/
+COPY sample-data /app/sample-data
+COPY scripts/wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+CMD ["/wait-for-it.sh", "db:5432", "--", "/app/bin/app"]
