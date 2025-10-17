@@ -147,7 +147,7 @@ then run:
 ```sql
 SELECT * FROM deals;
 ```
-##🧹 Restarting Everything
+## 🧹 Restarting Everything
 
 ```bash
 make down
@@ -203,6 +203,6 @@ flowchart LR
 
 ## Author: 
 maram ©
-ps: I used AI tool to help me write this read.me
+ps: I used AI tool to help me write this readme
 
 
